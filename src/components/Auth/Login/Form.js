@@ -13,11 +13,19 @@ import {
   InputGroup,
   InputRightElement,
   useDisclosure,
+  useToast,
+  Box,
 } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 import { BiHide, BiShow } from "react-icons/bi";
+import { FcGoogle } from "react-icons/fc";
 import ResetPassword from "./ResetModal";
+import { loginUser, handleGoogleLogin } from "../../../ducks/actions";
 
-const CForm = () => {
+const CForm = ({ loginUser, handleGoogleLogin }) => {
+  const toast = useToast();
+  const history = useHistory();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
@@ -27,26 +35,21 @@ const CForm = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  function onSubmit(values) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2));
-        resolve();
-      }, 3000);
-    });
+  async function onSubmit({ email, password }) {
+    await loginUser({ email, password, history, toast });
   }
 
   return (
-    <>
+    <Box h="full" px={[null, "16"]}>
       <ResetPassword isOpen={isOpen} onClose={onClose} />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack
-          px={[null, "16"]}
           w="full"
           align="flex-start"
           h="full"
           justify="space-between"
+          spacing="10"
         >
           <Heading>Log In</Heading>
           <VStack w="full">
@@ -158,8 +161,20 @@ const CForm = () => {
           </Button>
         </VStack>
       </form>
-    </>
+      <Button
+        mt="7"
+        onClick={() => handleGoogleLogin({ history, toast })}
+        w={["full"]}
+        size="md"
+        rounded="md"
+        type="submit"
+        variant="outline"
+        rightIcon={<FcGoogle size={24} />}
+      >
+        Login With
+      </Button>
+    </Box>
   );
 };
 
-export default CForm;
+export default connect(null, { loginUser, handleGoogleLogin })(CForm);

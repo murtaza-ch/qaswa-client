@@ -10,9 +10,10 @@ import {
   Heading,
   useToast,
 } from "@chakra-ui/react";
-import { auth } from ".././../../firebase";
+import { connect } from "react-redux";
+import { sendSignInLinkToEmail } from "../../../ducks/actions";
 
-const CForm = () => {
+const CForm = ({ sendSignInLinkToEmail }) => {
   const toast = useToast();
   const {
     handleSubmit,
@@ -21,20 +22,7 @@ const CForm = () => {
   } = useForm();
 
   async function onSubmit({ email }) {
-    const config = {
-      url: `${process.env.REACT_APP_REGISTER_URL}`,
-      handleCodeInApp: true,
-    };
-    await auth.sendSignInLinkToEmail(email, config);
-    toast({
-      title: "Verification Email!",
-      description: `Email sent to ${email}`,
-      status: "success",
-      duration: 9000,
-      position: "top-right",
-      isClosable: true,
-    });
-    localStorage.setItem("email", email);
+    await sendSignInLinkToEmail({ email, toast });
   }
 
   return (
@@ -94,4 +82,4 @@ const CForm = () => {
   );
 };
 
-export default CForm;
+export default connect(null, { sendSignInLinkToEmail })(CForm);

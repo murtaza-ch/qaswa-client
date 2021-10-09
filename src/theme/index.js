@@ -10,7 +10,7 @@ export const theme = extendTheme({
     Button,
   },
   fonts: {
-    Heading: "Rubik",
-    body: "Rubik",
+    heading: "Montserrat, sans-serif",
+    body: "Montserrat, sans-serif",
   },
 });

@@ -1,11 +1,11 @@
 import React from "react";
-import { CHome } from "../../components";
+import { CHome, PublicLayout } from "../../components";
 
 const Home = () => {
   return (
-    <div>
+    <PublicLayout>
       <CHome />
-    </div>
+    </PublicLayout>
   );
 };
 

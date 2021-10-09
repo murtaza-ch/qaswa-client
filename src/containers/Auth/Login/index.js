@@ -1,11 +1,11 @@
 import React from "react";
-import { CLogin } from "../../../components";
+import { CLogin, PublicLayout } from "../../../components";
 
 const Login = () => {
   return (
-    <div>
+    <PublicLayout>
       <CLogin />
-    </div>
+    </PublicLayout>
   );
 };
 

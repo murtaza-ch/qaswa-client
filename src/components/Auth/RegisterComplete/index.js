@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   FormErrorMessage,
@@ -13,10 +14,12 @@ import {
   useToast,
   Flex,
 } from "@chakra-ui/react";
-import { auth } from ".././../../firebase";
+import { connect } from "react-redux";
 import { BiHide, BiShow } from "react-icons/bi";
+import { registerComplete } from "../../../ducks/actions";
 
-const RegisterComplete = ({ history }) => {
+const CRegisterComplete = ({ registerComplete }) => {
+  const history = useHistory();
   const toast = useToast();
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
@@ -24,33 +27,14 @@ const RegisterComplete = ({ history }) => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      email: localStorage.getItem("email"),
+    },
+  });
 
-  async function onSubmit(values) {
-    try {
-      const result = await auth.signInWithEmailLink(
-        values.email,
-        window.location.href
-      );
-      if (result.user.emailVerified) {
-        localStorage.removeItem("email");
-
-        let user = auth.currentUser;
-        await user.updatePassword(values.password);
-        const idTokenResult = await user.getIdTokenResult();
-        history.push("/");
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Email Verification Failed!",
-        description: error.message,
-        status: "error",
-        duration: 9000,
-        position: "top-right",
-        isClosable: true,
-      });
-    }
+  async function onSubmit({ email, password }) {
+    await registerComplete({ email, password, history, toast });
   }
 
   return (
@@ -58,7 +42,7 @@ const RegisterComplete = ({ history }) => {
       justifyContent="center"
       alignItems="center"
       w="full"
-      h="calc(100vh - 48px)"
+      h="calc(100vh - 160px)"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing="10">
@@ -77,8 +61,8 @@ const RegisterComplete = ({ history }) => {
               </FormLabel>
 
               <Input
+                disabled
                 w="sm"
-                value={localStorage.getItem("email")}
                 id="email"
                 placeholder="Email"
                 {...register("email", {
@@ -166,4 +150,4 @@ const RegisterComplete = ({ history }) => {
   );
 };
 
-export default RegisterComplete;
+export default connect(null, { registerComplete })(CRegisterComplete);

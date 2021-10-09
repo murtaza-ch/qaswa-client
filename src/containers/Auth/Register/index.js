@@ -1,11 +1,11 @@
 import React from "react";
-import { CRegister } from "../../../components";
+import { CRegister, PublicLayout } from "../../../components";
 
 const Register = () => {
   return (
-    <div>
+    <PublicLayout>
       <CRegister />
-    </div>
+    </PublicLayout>
   );
 };
 

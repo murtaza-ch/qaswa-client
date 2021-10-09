@@ -15,28 +15,58 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  useToast,
 } from "@chakra-ui/react";
+import { auth } from "../../../firebase";
 
 const ResetPassword = ({ isOpen, onClose }) => {
+  const toast = useToast();
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm();
 
-  function onSubmit(values) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2));
-        resolve();
-      }, 3000);
-    });
+  async function onSubmit({ email }) {
+    const config = {
+      url: `${process.env.REACT_APP_FORGOT_PASSWORD_RESET}`,
+      handleCodeInApp: true,
+    };
+    await auth
+      .sendPasswordResetEmail(email, config)
+      .then(() => {
+        toast({
+          title: "Password Reset!",
+          description: `Password Reset link sent to ${email}`,
+          status: "success",
+          duration: 9000,
+          position: "top-right",
+          isClosable: true,
+        });
+        onClose();
+      })
+      .catch((error) => {
+        toast({
+          title: "Error!",
+          description: error.message,
+          status: "success",
+          duration: 9000,
+          position: "top-right",
+          isClosable: true,
+        });
+        onClose();
+      });
   }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent rounded="sm" py="4">
+      <ModalContent
+        rounded="sm"
+        py="4"
+        pos={["absolute", "relative"]}
+        bottom={["-60px", null]}
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalHeader px="8">Reset password</ModalHeader>
           <ModalCloseButton />
