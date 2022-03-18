@@ -6,16 +6,19 @@ import {
   FormControl,
   Input,
   FormErrorMessage,
-  Text,
   Button,
   Flex,
+  HStack,
+  Text,
 } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { connect, useSelector, useDispatch } from "react-redux";
-import { getCategory } from "../../../../ducks/actions";
+import { getCategory, updateCategory } from "../../../../ducks/actions";
+import HandLoading from "../../../shared/HandLoading";
 
-const CUpdate = ({ getCategory }) => {
+const CUpdate = ({ getCategory, updateCategory }) => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const toast = useToast();
   const { slug } = useParams();
@@ -23,23 +26,24 @@ const CUpdate = ({ getCategory }) => {
   const {
     handleSubmit,
     register,
-    reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm({
-    defaultValues: {
-      name: category && category.name,
-    },
+    mode: "onBlur",
   });
 
   async function onSubmit({ name }) {
-    // await createCategory({ toast, name, history });
-    reset();
+    await updateCategory({ toast, slug, name, history });
   }
 
   useEffect(() => {
     slug && getCategory({ toast, slug });
     return () => dispatch({ type: "CATEGORIES_RESET" });
   }, [getCategory, slug, toast, dispatch]);
+
+  useEffect(() => {
+    category && setValue("name", category.name);
+  }, [category, setValue]);
 
   return (
     <VStack py="10">
@@ -49,13 +53,18 @@ const CUpdate = ({ getCategory }) => {
         width={{ base: "full", md: "500px" }}
         p="4"
         rounded="xl"
-        spacing="6"
+        spacing="10"
       >
-        <Heading color="gray.400" fontSize="xl">
-          Update Category
-        </Heading>
+        <HStack justifyContent="space-between" w="full">
+          <Heading color="gray.400" fontSize="xl">
+            Update Category
+          </Heading>
+          <Text color="brand-orange.500">
+            <Link to="/admin/category/list">View</Link>
+          </Text>
+        </HStack>
         {loading ? (
-          <h1>Loading</h1>
+          <HandLoading h={200} w={200} />
         ) : (
           <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)}>
             <VStack w="full">
@@ -98,4 +107,4 @@ const CUpdate = ({ getCategory }) => {
   );
 };
 
-export default connect(null, { getCategory })(CUpdate);
+export default connect(null, { getCategory, updateCategory })(CUpdate);

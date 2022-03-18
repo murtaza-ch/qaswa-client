@@ -9,7 +9,6 @@ import {
   DrawerCloseButton,
   Input,
   Button,
-  useDisclosure,
 } from "@chakra-ui/react";
 
 const SidebarDrawer = ({ isOpen, onClose }) => {

@@ -3,8 +3,12 @@ import { API } from "../../constants";
 import { apiClient } from "../../service";
 import { errorToastHandler, successToastHandler } from "../../utils/toast";
 
-const createOrUpdateUser = async () => {
-  return await apiClient.post(API.ROUTES.CREATE_OR_UPDATE_USER);
+const createOrUpdateUser = async ({ toast }) => {
+  try {
+    return await apiClient.post(API.ROUTES.CREATE_OR_UPDATE_USER);
+  } catch (error) {
+    errorToastHandler({ toast, title: "Error!", error: error.message });
+  }
 };
 
 export const currentUser = async ({ toast }) => {
@@ -15,8 +19,12 @@ export const currentUser = async ({ toast }) => {
   }
 };
 
-export const currentAdmin = async () => {
-  return await apiClient.post(API.ROUTES.CURRENT_ADMIN);
+export const currentAdmin = async ({ toast }) => {
+  try {
+    return await apiClient.post(API.ROUTES.CURRENT_ADMIN);
+  } catch (error) {
+    errorToastHandler({ toast, title: "Error!", error: error.message });
+  }
 };
 
 export const loginUser = ({ email, password, history, toast }) => {
@@ -25,7 +33,7 @@ export const loginUser = ({ email, password, history, toast }) => {
       const result = await auth.signInWithEmailAndPassword(email, password);
       const { user } = result;
       const idTokenResult = await user.getIdTokenResult();
-      const { data } = await createOrUpdateUser();
+      const { data } = await createOrUpdateUser({ toast });
       dispatch({
         type: "LOGGED_IN_USER",
         payload: {
@@ -55,7 +63,7 @@ export const handleGoogleLogin = ({ history, toast }) => {
       auth.signInWithPopup(googleAuthProvider).then(async (result) => {
         const { user } = result;
         const idTokenResult = await user.getIdTokenResult();
-        const { data } = await createOrUpdateUser();
+        const { data } = await createOrUpdateUser({ toast });
         dispatch({
           type: "LOGGED_IN_USER",
           payload: {
@@ -118,7 +126,7 @@ export const registerComplete = ({ email, password, history, toast }) => {
         let user = auth.currentUser;
         await user.updatePassword(password);
         const idTokenResult = await user.getIdTokenResult();
-        const { data } = await createOrUpdateUser();
+        const { data } = await createOrUpdateUser({ toast });
         dispatch({
           type: "LOGGED_IN_USER",
           payload: {

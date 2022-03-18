@@ -82,16 +82,22 @@ export const removeCategory = ({ toast, slug, onClose }) => {
   };
 };
 
-export const updateCategory = async ({ toast, slug, category }) => {
-  try {
-    return await apiClient.put(`${API.ROUTES.CATEGORY}/${slug}`, category);
-  } catch (error) {
-    errorToastHandler({
-      toast,
-      title: "Error!",
-      error: error.response ? error.response.data : error.message,
-    });
-  }
+export const updateCategory = ({ toast, slug, name, history }) => {
+  return async () => {
+    try {
+      const res = await apiClient.put(`${API.ROUTES.CATEGORY}/${slug}`, {
+        name,
+      });
+      history.push("/admin/category/list");
+      return res;
+    } catch (error) {
+      errorToastHandler({
+        toast,
+        title: "Error!",
+        error: error.response ? error.response.data : error.message,
+      });
+    }
+  };
 };
 
 export const createCategory = async ({ toast, name, history }) => {

@@ -17,6 +17,7 @@ const LoadingRedirect = () => {
 
   return (
     <div>
+      <h1>Loading... {count}</h1>
       <Spinner />
     </div>
   );

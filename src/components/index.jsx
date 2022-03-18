@@ -1,15 +1,17 @@
 // Shared Components
 
+// Layouts
+export { default as AdminLayout } from "./Layout/AdminHeader";
+export { default as PublicLayout } from "./Layout/PublicLayout";
+export { default as UserLayout } from "./Layout/UserLayout";
+
 // Components
 export { default as CLogin } from "./Auth/Login";
 export { default as CRegister } from "./Auth/Register";
 export { default as CRegisterComplete } from "./Auth/RegisterComplete";
 export { default as CHome } from "./Home";
-export { default as Header } from "./Header";
-export { default as UserLayout } from "./UserLayout";
+export { default as Header } from "./Layout/Header";
 export { default as ResetPassword } from "./Auth/ResetPassword";
-export { default as AdminLayout } from "./AdminLayout";
-export { default as PublicLayout } from "./PublicLayout";
 
 //Product
 export { default as PCreate } from "./Admin/Product/Create";
